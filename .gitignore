@@ -1,0 +1,10 @@
+# 操作系统
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# 临时文件
+*.tmp
+*.bak
+*.log
+~$*
