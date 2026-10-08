@@ -6,7 +6,7 @@
 
 把下面这句话连同仓库地址交给一个能读写文件、能执行命令的 agent：
 
-> 读取这个仓库的 README，按 agent-setup 原则帮我完成本机智能体配置；先备份现有配置，保留不冲突的本机设置，需要密钥或替换模型时再问我。
+> 读取这个仓库的 README，安装并加载 agent-setup 和 personal-code-prompt，按原则帮我完成本机智能体配置；先备份现有配置，保留不冲突的本机设置，需要密钥或替换模型时再问我。
 
 仓库地址：https://github.com/Finnyhudson/my-personal-vibecoding-skills
 
@@ -14,11 +14,11 @@
 
 ### agent 执行步骤
 
-1. 先直接读仓库里的 `agent-setup/SKILL.md` 和 `agent-setup/PRINCIPLES.md`，**不用先安装 skill 就能照做**，`PRINCIPLES.md` 是唯一依据。
+1. 先检查 `agent-setup` 和 `personal-code-prompt` 是否已被当前 agent 识别。已识别且支持 skill 工具时，**实际调用工具加载这两个 skill**，再读 `agent-setup/PRINCIPLES.md`；不要把“读过文件”说成“已加载”。尚未识别时，先读仓库里的两个 `SKILL.md` 与 `PRINCIPLES.md`，用于完成安装前的目录检查；`PRINCIPLES.md` 是配置原则的唯一依据。
 2. 只读检查本机现状：OpenCode 版本、实际生效的配置目录、oh-my-opencode-slim 版本、可用的 provider 和模型、已有的自定义设置。
 3. 按 `PRINCIPLES.md` 落地：版本和格式与 `agent-setup/snapshot/` 一致时以快照为参考；不一致时不要硬套旧字段，按原则改成新格式，先查对应版本的官方文档。**版本和快照对不上不是任务终点**，继续按 skill 做。
 4. 改动前先展示目标、涉及覆盖的范围和关键冲突；已有自定义按 skill 要求逐项确认，并先备份。
-5. 安装 `agent-setup` 与 `personal-code-prompt` 的运行副本，把快照里的本机路径换成当前机器的路径。
+5. 安装 `agent-setup` 与 `personal-code-prompt` 的运行副本，把快照里的本机路径换成当前机器的路径。安装后实际加载两个 skill，再继续配置；若宿主必须重启才能识别新 skill，明确告诉用户重启后继续加载，不假装当前会话已加载。宿主没有 skill 工具时，完整读取两个 `SKILL.md` 及相关资源作为替代，并如实说明没有原生加载能力。
 6. 密钥：让用户自己设置或输入环境变量；不进仓库，也不写进报告。缺哪个模型就列出来问用户，不猜替代。
 7. 只做最小静态检查（配置能否解析、模型和变体是否对应、每个自定义 agent 是否有同名提示词文件、写代码的 agent 是否包含 `personal-code-prompt`）。报告改了什么、哪些没验证，让用户重启生效；未经授权不重启、不调用付费模型、不动入口或快捷方式。
 
