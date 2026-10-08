@@ -120,3 +120,12 @@ skill 内容变化后需要**重启 opencode** 才会生效。
 | Skill | 用途 |
 |-------|------|
 | `personal-code-prompt` | 个人项目的代码与 Prompt 编写约定 |
+| `agent-setup` | 多 agent 配置的设计原则（`PRINCIPLES.md`）、当前配置快照（`snapshot/`，已去除密钥），以及在新机器或新版本 OpenCode 上照着配置的步骤 |
+
+### 在新机器上恢复 agent 配置
+
+1. 克隆本仓库，用 `sync.ps1 -Direction Push -Target <OpenCode 的 skills 目录>` 安装全部 skill。V2 的 skills 目录在它的配置目录下。
+2. 设置快照里用到的密钥环境变量，变量名见 `agent-setup/snapshot/opencode-v2/opencode.jsonc` 中的 `{env:...}`。
+3. 重启 OpenCode，对 agent 说「用 agent-setup 按原则配置本机」。
+
+**不要提交任何真实密钥。**
