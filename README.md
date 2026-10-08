@@ -2,6 +2,48 @@
 
 个人维护的 AI coding agent skills 集合，用于跨机器/跨项目复用。
 
+## 仓库里有什么
+
+| 内容 | 是什么 | 解决什么问题 |
+|---|---|---|
+| `agent-setup/` | 我的多 agent 配置：设计原则、当前配置快照（已去掉密钥）、以及让 agent 照着配置的步骤 | 换机器或 OpenCode 升级后，能按同一套思路把配置恢复出来 |
+| `personal-code-prompt/` | 我写代码和写 Prompt 的约定 | 让写代码的 agent 按我的习惯做事，而不是按模型自己的偏好 |
+| `install.ps1` | 版本完全匹配时的便捷安装脚本 | 同版本机器上少做几步手工操作 |
+| `sync.ps1` | 仓库与 OpenCode 运行目录之间的 skill 同步脚本 | 保持两边 skill 内容一致 |
+
+### agent-setup 和原生 oh-my-opencode-slim 的区别
+
+[oh-my-opencode-slim](https://github.com/alvinunreal/oh-my-opencode-slim)（下称 omo-slim）是 OpenCode 的多 agent 插件，提供 orchestrator、explorer、oracle、librarian、fixer、designer 等角色和它们的内置提示词。**agent-setup 不替代它**，而是在它之上叠加我自己的用法。没有 omo-slim，agent-setup 无法单独工作。
+
+| 方面 | 原生 omo-slim | 加上 agent-setup 之后 |
+|---|---|---|
+| 模型 | 按 preset 推荐，可配 fallback 链 | 每个 agent 固定一个模型，不开 fallback；出错由我决定重试或换模型 |
+| 模型版本 agent | 无 | 增加 fixer-grok / fixer-sol / fixer-sonnet、explorer-gemini / explorer-luna、librarian-gemini / librarian-luna、oracle-opus / oracle-astra，只在点名或要求跨模型比较时使用 |
+| orchestrator 何时自己动手 | 内置规则：简单的自己做，复杂的派出去 | 只有我明确说「你自己做 / 别派」时才自己做 |
+| explorer → oracle | 都经过 orchestrator，没有专门约定 | explorer 结果原样转给 oracle；oracle 只在结论依赖具体代码时定点读，不重扫全仓；缺信息时返回「Need from explorer」补查 |
+| 多个专家分析同一件事 | 无专门规则 | 分析类角色拿同一个完整问题、互不看结论、汇报时分开写一致和分歧；写代码的角色仍按模块分工 |
+| 业务改动核对 | 无 | 新增 validator：改动业务行为时，先请我确认规则清单，再逐条核对 |
+| 范围与验证 | 按插件默认 | 只做明确要求的事；验证只做最小必要的，不自动跑测试或审计 |
+| 对我汇报 | 内置「没被问就不总结」 | 完成时用完整句子说明结果、超范围改动的原因、验证情况和需要我做什么 |
+| 各模型提示词 | 内置通用写法 | 按各厂商官方建议调整（例如 GPT 写明指令优先级、Gemini 把限制放最后、DeepSeek fixer 连续失败两次就停） |
+| 上下文压缩 | 不涉及 | 记录哪些模型用原生压缩、哪些改用 summary 及原因 |
+
+具体规则以 `agent-setup/PRINCIPLES.md` 为准。
+
+### personal-code-prompt 的内容
+
+核心原则：**能确定的事用代码保证，需要语义理解的事才交给模型。**
+
+- **动手前**：先分清哪部分该由模型做、哪部分该由代码做；确认本次授权范围（能改哪些文件、能不能跑测试或外部请求）。
+- **新项目起步**：依次确认目标与非目标、输入输出、真实业务步骤、模型与代码分工、失败处理，然后只建当前需要的文件。
+- **写代码**：主入口按业务顺序薄编排；命名用业务语言；业务常量和 Prompt 版本集中放在 settings 并说明原因；遵循 YAGNI，不加没有需求的防御和框架；辅助步骤失败要隔离，核心步骤失败不隐藏。
+- **写 Prompt**：一个 Prompt 只承担一个核心语义任务；用正面准入加「无结果」出口，不堆排除项；输入最小充分，输出最小必要；确定性的去重、排序、截断交给代码；格式契约要同时覆盖定义、发送和返回校验。
+- **修改流程**：出方案 → 用户确认 → 实施 → 按确认的规则核对 → 汇总。
+- **bad case**：先定位问题出在 Prompt、上游输入、代码、下游还是节点设计，确认是 Prompt 问题才改 Prompt；新版本放新目录，旧版不动。
+- **效果验证**：经授权后，用同一批真实输入对比新旧版本的最终业务结果，不能只因格式正确就说效果变好。
+
+附带资源：`code-template.md`（代码样例）、`prompt-template.md`（Prompt 模板与上下游分工）、`sources.md`（来源与继承边界）。
+
 ## 让 agent 帮我完成本机配置
 
 把下面这句话连同仓库地址交给一个能读写文件、能执行命令的 agent：
@@ -35,15 +77,15 @@ my-personal-vibecoding-skills/
 ├── README.md
 ├── install.ps1                  # 便捷安装到 OpenCode 2 配置目录（版本证据不满足则停）
 ├── sync.ps1                     # 仓库 <-> opencode 运行目录的同步脚本
-├── personal-code-prompt/        # skill 1
+├── personal-code-prompt/        # 代码与 Prompt 约定
 │   ├── SKILL.md
 │   ├── code-template.md         # 该 skill 自己的资源文件
 │   ├── prompt-template.md
 │   └── sources.md
-└── <skill-two>/                 # skill 2
+└── agent-setup/                 # 多 agent 配置原则与快照
     ├── SKILL.md
-    └── references/
-        └── examples.md
+    ├── PRINCIPLES.md            # 设计原则（以它为准）
+    └── snapshot/                # 当前配置快照，密钥已换成 {env:...}
 ```
 
 ## 目录约定
