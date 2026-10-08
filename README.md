@@ -2,11 +2,38 @@
 
 个人维护的 AI coding agent skills 集合，用于跨机器/跨项目复用。
 
+## 让 agent 帮我完成本机配置
+
+把下面这句话连同仓库地址交给一个能读写文件、能执行命令的 agent：
+
+> 读取这个仓库的 README，按 agent-setup 原则帮我完成本机智能体配置；先备份现有配置，保留不冲突的本机设置，需要密钥或替换模型时再问我。
+
+仓库地址：https://github.com/Finnyhudson/my-personal-vibecoding-skills
+
+已经克隆到本机时，直接把那个目录路径告诉 agent 也行；克隆和用现有检出都可以，agent 自己会找到仓库根目录。
+
+### agent 执行步骤
+
+1. 先直接读仓库里的 `agent-setup/SKILL.md` 和 `agent-setup/PRINCIPLES.md`，**不用先安装 skill 就能照做**，`PRINCIPLES.md` 是唯一依据。
+2. 只读检查本机现状：OpenCode 版本、实际生效的配置目录、oh-my-opencode-slim 版本、可用的 provider 和模型、已有的自定义设置。
+3. 按 `PRINCIPLES.md` 落地：版本和格式与 `agent-setup/snapshot/` 一致时以快照为参考；不一致时不要硬套旧字段，按原则改成新格式，先查对应版本的官方文档。**版本和快照对不上不是任务终点**，继续按 skill 做。
+4. 改动前先展示目标、涉及覆盖的范围和关键冲突；已有自定义按 skill 要求逐项确认，并先备份。
+5. 安装 `agent-setup` 与 `personal-code-prompt` 的运行副本，把快照里的本机路径换成当前机器的路径。
+6. 密钥：让用户自己设置或输入环境变量；不进仓库，也不写进报告。缺哪个模型就列出来问用户，不猜替代。
+7. 只做最小静态检查（配置能否解析、模型和变体是否对应、每个自定义 agent 是否有同名提示词文件、写代码的 agent 是否包含 `personal-code-prompt`）。报告改了什么、哪些没验证，让用户重启生效；未经授权不重启、不调用付费模型、不动入口或快捷方式。
+
+### 关于 install.ps1
+
+`install.ps1` 只是**已经装好匹配版本时**的可选快捷方式，不是跨版本主流程。它有多处交互会停下来等确认，不适合 agent 无人值守时直接跑，否则会挂在 `Read-Host`；agent 应优先按上面的 skill 步骤做，用户也可以选择自己手动运行脚本。
+
+不要期待完全无人干预，也不要指望它在任意系统自动安装 OpenCode 或依赖。OpenCode 还没安装时，先向用户说明需要装什么、请求授权，得到同意再装。
+
 ## 目录结构
 
 ```
 my-personal-vibecoding-skills/
 ├── README.md
+├── install.ps1                  # 便捷安装到 OpenCode 2 配置目录（版本证据不满足则停）
 ├── sync.ps1                     # 仓库 <-> opencode 运行目录的同步脚本
 ├── personal-code-prompt/        # skill 1
 │   ├── SKILL.md
@@ -129,3 +156,70 @@ skill 内容变化后需要**重启 opencode** 才会生效。
 3. 重启 OpenCode，对 agent 说「用 agent-setup 按原则配置本机」。
 
 **不要提交任何真实密钥。**
+
+## 便捷安装（install.ps1）
+
+> 可选的手动快捷方式，不是跨版本主流程；交给 agent 配置请走上面的入口。
+
+用 `install.ps1` 把 `snapshot/opencode-v2` 和仓库根目录的两个 skill 安装到 OpenCode 2 配置目录。
+
+它**不是任何机器、任何版本都能一键跑通**：只有在能证明版本一致时才写入，否则一律在写入前停下。脚本只做安装，不安装 OpenCode 或依赖，不启动 OpenCode，不调用模型，不改启动脚本和快捷方式。
+
+### 前提
+
+- Windows PowerShell 5.1 或更晚。
+- 目标机器已经装好 **OpenCode 2.0.23**（脚本读取实际 CLI 的版本）。
+- 目标配置目录里已经声明并装好 **oh-my-opencode-slim 3.0.2**。
+- 知道 OpenCode 2 的配置目录路径；脚本不会替你猜，必须由你给出或确认。
+
+### 最短安装命令
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1 -ConfigDir "D:\path\to\opencode\config"
+```
+
+`-ConfigDir` 指向 OpenCode 2 的配置目录本身（即 `.../config/opencode`）。
+
+不传 `-ConfigDir` 时，脚本先看 `OPENCODE_CONFIG_DIR`；都没有就把默认位置只当作候选项列出，**无论候选有几个都必须由你确认**（或直接输入另一个绝对目录），不会自动选中，也不按文件名猜 V1。
+
+### 版本证据（不满足就停）
+
+脚本只在下面三条都能从真实证据成立时才写入：
+
+- OpenCode 版本：运行实际选定的 CLI `--version`，必须等于 2.0.23。先过这一关。
+- 插件缓存目录：用同一个 CLI 运行 `opencode debug paths cache`。按 v2 文档，这条命令只读本地路径，不启动 server、不打开数据库。输出必须是恰好一个有效的绝对目录，否则停止。脚本不再推测任何缓存路径。
+- oh-my-opencode-slim 版本：读取目标配置里 `plugin` 与 `plugins` 的声明（字符串或 `{package, options}`，两者会被合并）。必须恰好一条、精确固定为 `oh-my-opencode-slim@3.0.2`；有重复冲突、未固定（标签/范围）或没有声明都会停止。
+
+然后按 v2.0.23 的 npm 缓存规则检查包：`<cache>\npm\oh-my-opencode-slim@3.0.2\<最大数字 generation>\node_modules\oh-my-opencode-slim\package.json`。固定版本命中缓存时会复用最大 generation，所以只认最大数字 generation；若它没有有效 package（name/version 不是 `oh-my-opencode-slim@3.0.2`）就停止，**不会**降级到旧的 generation。
+
+脚本会把「CLI 路径与版本」「配置目录及其来源」「CLI 返回的缓存目录」「配置里的 plugin 声明」「解析到的 generation 和插件包路径与版本」都打印出来；其中配置目录是你给出或确认的，不是脚本探测到的。
+
+### 运行环境限制（安装前必须确认）
+
+上面解析到的是：**在同一启动环境里通过选定 CLI 启动 OpenCode 时，这份配置将加载的插件包**。它不证明一个已经在运行的服务所使用的插件版本——独立启动的服务可能有不同的环境变量。因此写入前脚本会要求你明确确认：今后将通过这个 CLI、这份配置和这个缓存环境启动或重启 OpenCode；不确认就停止并交给 `agent-setup`。脚本不会自动改服务、入口，也不会替你重启。
+
+### 脚本会做什么
+
+1. 定位目标配置目录（显式/环境变量，否则由你确认候选或输入绝对路径）。
+2. 先用选定 CLI 过 2.0.23 门禁，再让同一 CLI 报缓存目录，并按上面的规则核对插件声明与包；任一不满足就**在写入之前停止**。
+3. 展示目标、覆盖范围和本地改动过的冲突文件，并要求你确认启动环境；确认后先把要覆盖的文件备份到带日期的目录，再写入：
+   - 配置：`opencode.jsonc`、`AGENTS.md`、`oh-my-opencode-slim.json`、`oh-my-opencode-slim\`、`plugins\handoff.ts`
+   - 两个 skill：`skills\agent-setup\`、`skills\personal-code-prompt\`
+4. 不复制 `snapshot/machine-specific/` 启动脚本，不改入口或快捷方式；快照里的本机绝对路径只有在属于用户目录时才替换为当前用户目录，遇到无法安全适配的路径就停止。
+5. 提示配置里用到的 API key 环境变量（`FINNSCODE_API_KEY`、`COMMANDCODE_API_KEY`、`COPILOT_API_KEY`），用隐藏输入设置到用户环境变量；已有值默认保留，真实 key 既不显示也不写文件。
+6. 静态解析 `opencode.jsonc` 和 `oh-my-opencode-slim.json`，最后提示重启。
+
+已存在的同名文件如果和快照内容不同，会作为「本地改动」单独列出并需要你确认，不会静默覆盖，也不会删除无关文件。
+
+### 备份与恢复
+
+- 每次安装前，被覆盖的文件会备份到配置目录同级的 `opencode-backup-<yyyyMMdd-HHmmss>\`，并保留相对路径；只新增、不被覆盖的文件不需要备份。
+- 恢复时，把备份目录里的文件按相同相对路径拷回配置目录：
+
+```powershell
+Copy-Item .\opencode-backup-20261008-120000\* "D:\path\to\opencode\config" -Recurse -Force
+```
+
+### 停下时怎么办（版本或证据不匹配出口）
+
+如果脚本报版本不匹配，或报读不到恰好一个有效缓存目录、读不到唯一固定的插件声明、最大 generation 里没有有效包，说明本机的版本或证据和快照对不上，脚本不会写任何东西。这时不要硬套快照，改用 `agent-setup` skill：它会按 `PRINCIPLES.md` 把配置适配到本机版本。模型是否可用安装脚本不检测，重启后需要你在本机自行确认。
