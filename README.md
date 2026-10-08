@@ -8,9 +8,11 @@
 my-personal-vibecoding-skills/
 ├── README.md
 ├── sync.ps1                     # 仓库 <-> opencode 运行目录的同步脚本
-├── prompt-engineering/          # skill 1
+├── personal-code-prompt/        # skill 1
 │   ├── SKILL.md
-│   └── prompt-template.md       # 该 skill 自己的资源文件
+│   ├── code-template.md         # 该 skill 自己的资源文件
+│   ├── prompt-template.md
+│   └── sources.md
 └── <skill-two>/                 # skill 2
     ├── SKILL.md
     └── references/
@@ -83,7 +85,7 @@ opencode 默认扫描 `~/.config/opencode/skills/`，因此**不要**再配置 `
 .\sync.ps1                                            # 只报告差异，不做改动（默认）
 .\sync.ps1 -Direction Push                            # 仓库 -> 运行目录
 .\sync.ps1 -Direction Pull                            # 运行目录 -> 仓库
-.\sync.ps1 -Direction Push -Skill prompt-engineering  # 只同步一个 skill
+.\sync.ps1 -Direction Push -Skill personal-code-prompt  # 只同步一个 skill
 .\sync.ps1 -Target "$env:USERPROFILE\.claude\skills"  # 同步到另一个 skill 目录
 ```
 
@@ -117,4 +119,4 @@ skill 内容变化后需要**重启 opencode** 才会生效。
 
 | Skill | 用途 |
 |-------|------|
-| `prompt-engineering` | 编写、优化、审查 LLM/Agent prompt |
+| `personal-code-prompt` | 个人项目的代码与 Prompt 编写约定 |
