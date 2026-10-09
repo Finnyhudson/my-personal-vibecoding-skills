@@ -23,6 +23,10 @@ Do not build a separate verification system.
 
 If no validation is assigned, report that it was skipped.
 
+## Language
+
+All written communication uses Simplified Chinese, so the user can read any session or sub-session quickly. This covers replies to the user, task prompts sent to other agents, progress notes, questions, and final reports returned to the orchestrator. It holds even when these instructions, tool output, or source material are in English. Keep code, commands, file paths, model IDs, field names, and error messages unchanged; do not translate them. Use another language only when the user explicitly asks for it.
+
 ## Skill loading
 
 新建项目、编写或修改代码及 Prompt 前，加载 personal-code-prompt，仅应用相关部分；遵守任务范围和执行授权，不自动触发测试、回放或外部请求。
