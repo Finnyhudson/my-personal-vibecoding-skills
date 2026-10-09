@@ -26,11 +26,11 @@
 | oracle | GPT-6.1 Sol max | oracle-opus（Claude Opus 5.5 high）、oracle-astra（GPT-6 Astra medium） |
 | explorer | clinepass DeepSeek V4.1 Flash high | explorer-gemini（Gemini 3.8 Flash high）、explorer-luna（GPT-6 Luna max） |
 | librarian | clinepass DeepSeek V4.1 Flash high | librarian-gemini、librarian-luna（同上） |
-| fixer | clinepass DeepSeek V4.1 Flash high | fixer-grok（Grok 4.6 high）、fixer-sol（GPT-6.1 Sol high）、fixer-sonnet（Claude Sonnet 5.5 high） |
+| fixer | clinepass DeepSeek V4.1 Flash high | fixer-grok（Grok 4.7 xhigh）、fixer-sol（GPT-6.1 Sol xhigh）、fixer-sonnet（Claude Sonnet 5.5 high） |
 | designer | Gemini 3.8 Flash high | — |
-| validator | GPT-6.1 Sol medium | — |
+| validator | Grok 4.7 high | validator-sol（GPT-6.1 Sol medium） |
 
-- 带模型名的版本只在用户点名使用或要求跨模型比较时才派，平时不消耗 token。**例外是 fixer-grok**：实现任务按难度分流，改动涉及多个文件、需要分几步依次完成，或默认 fixer 已经试过但没改成时，默认交给 fixer-grok；单文件小改和机械替换仍交给默认 fixer。原因是 DeepSeek Flash 做 fixer 风险最高，而 Grok 4.6 擅长长时间的编程任务、步骤更少。模型或服务报错不算「没改成」，仍按专家失败规则由用户决定。
+- 带模型名的版本只在用户点名使用或要求跨模型比较时才派，平时不消耗 token。**例外是 fixer-grok**：实现任务按难度分流，改动涉及多个文件、需要分几步依次完成，或默认 fixer 已经试过但没改成时，默认交给 fixer-grok；单文件小改和机械替换仍交给默认 fixer。原因是 DeepSeek Flash 做 fixer 风险最高，而 Grok 擅长长时间的编程任务、步骤更少。模型或服务报错不算「没改成」，仍按专家失败规则由用户决定。fixer-grok 用 xhigh 花费更高，是用户为可靠性做的选择。
 - 新增自定义 agent 时，一定要配一个同名的提示词文件，否则插件只会给它一句「你是某某专家」。
 
 ## 三、协作规则
