@@ -53,7 +53,7 @@ $ErrorActionPreference = 'Stop'
 # change between OpenCode versions, so the install refuses to run on anything
 # else. Update these only together with agent-setup/snapshot/opencode-v2.
 # ---------------------------------------------------------------------------
-$RequiredOpenCodeVersion = '2.0.23'
+$RequiredOpenCodeVersion = '2.0.25'
 $RequiredPluginName      = 'oh-my-opencode-slim'
 $RequiredPluginVersion   = '3.0.2'
 
@@ -228,7 +228,7 @@ function Resolve-PluginDeclaration {
 
 # Resolves the plugin package the config will load. The npm cache layout is
 # <global.cache>/npm/<name>@<version>/<generation>/node_modules/<name>
-# (packages/util/src/npm.ts, v2.0.23); a pinned version reuses the greatest
+# (packages/util/src/npm.ts, v2.0.23 and v2.0.25, unchanged); a pinned version reuses the greatest
 # numeric generation, so the greatest generation must hold a valid package. Never
 # fall back to an older generation.
 function Resolve-InstalledPluginPackage {

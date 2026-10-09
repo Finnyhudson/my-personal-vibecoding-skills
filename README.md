@@ -18,7 +18,7 @@
 | 方面 | 原生 omo-slim | 加上 agent-setup 之后 |
 |---|---|---|
 | 模型 | 按 preset 推荐，可配 fallback 链 | 每个 agent 固定一个模型，不开 fallback；出错由我决定重试或换模型 |
-| 模型版本 agent | 无 | 增加 fixer-grok / fixer-sol / fixer-sonnet、explorer-gemini / explorer-luna、librarian-gemini / librarian-luna、oracle-opus / oracle-astra，只在点名或要求跨模型比较时使用 |
+| 模型版本 agent | 无 | 增加 fixer-grok / fixer-sol / fixer-sonnet、explorer-gemini / explorer-luna、librarian-gemini / librarian-luna、oracle-opus / oracle-astra，平时只在点名或要求跨模型比较时使用；例外是 fixer-grok，多文件、多步骤或默认 fixer 没改成的实现任务默认交给它 |
 | orchestrator 何时自己动手 | 内置规则：简单的自己做，复杂的派出去 | 只有我明确说「你自己做 / 别派」时才自己做 |
 | explorer → oracle | 都经过 orchestrator，没有专门约定 | explorer 结果原样转给 oracle；oracle 只在结论依赖具体代码时定点读，不重扫全仓；缺信息时返回「Need from explorer」补查 |
 | 多个专家分析同一件事 | 无专门规则 | 分析类角色拿同一个完整问题、互不看结论、汇报时分开写一致和分歧；写代码的角色仍按模块分工 |
@@ -210,7 +210,7 @@ skill 内容变化后需要**重启 opencode** 才会生效。
 ### 前提
 
 - Windows PowerShell 5.1 或更晚。
-- 目标机器已经装好 **OpenCode 2.0.23**（脚本读取实际 CLI 的版本）。
+- 目标机器已经装好 **OpenCode 2.0.25**（脚本读取实际 CLI 的版本）。
 - 目标配置目录里已经声明并装好 **oh-my-opencode-slim 3.0.2**。
 - 知道 OpenCode 2 的配置目录路径；脚本不会替你猜，必须由你给出或确认。
 
@@ -228,11 +228,11 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -ConfigDir "D:\path\to\op
 
 脚本只在下面三条都能从真实证据成立时才写入：
 
-- OpenCode 版本：运行实际选定的 CLI `--version`，必须等于 2.0.23。先过这一关。
+- OpenCode 版本：运行实际选定的 CLI `--version`，必须等于 2.0.25。先过这一关。
 - 插件缓存目录：用同一个 CLI 运行 `opencode debug paths cache`。按 v2 文档，这条命令只读本地路径，不启动 server、不打开数据库。输出必须是恰好一个有效的绝对目录，否则停止。脚本不再推测任何缓存路径。
 - oh-my-opencode-slim 版本：读取目标配置里 `plugin` 与 `plugins` 的声明（字符串或 `{package, options}`，两者会被合并）。必须恰好一条、精确固定为 `oh-my-opencode-slim@3.0.2`；有重复冲突、未固定（标签/范围）或没有声明都会停止。
 
-然后按 v2.0.23 的 npm 缓存规则检查包：`<cache>\npm\oh-my-opencode-slim@3.0.2\<最大数字 generation>\node_modules\oh-my-opencode-slim\package.json`。固定版本命中缓存时会复用最大 generation，所以只认最大数字 generation；若它没有有效 package（name/version 不是 `oh-my-opencode-slim@3.0.2`）就停止，**不会**降级到旧的 generation。
+然后按 v2.0.25 的 npm 缓存规则（与 v2.0.23 相同）检查包：`<cache>\npm\oh-my-opencode-slim@3.0.2\<最大数字 generation>\node_modules\oh-my-opencode-slim\package.json`。固定版本命中缓存时会复用最大 generation，所以只认最大数字 generation；若它没有有效 package（name/version 不是 `oh-my-opencode-slim@3.0.2`）就停止，**不会**降级到旧的 generation。
 
 脚本会把「CLI 路径与版本」「配置目录及其来源」「CLI 返回的缓存目录」「配置里的 plugin 声明」「解析到的 generation 和插件包路径与版本」都打印出来；其中配置目录是你给出或确认的，不是脚本探测到的。
 
@@ -243,7 +243,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -ConfigDir "D:\path\to\op
 ### 脚本会做什么
 
 1. 定位目标配置目录（显式/环境变量，否则由你确认候选或输入绝对路径）。
-2. 先用选定 CLI 过 2.0.23 门禁，再让同一 CLI 报缓存目录，并按上面的规则核对插件声明与包；任一不满足就**在写入之前停止**。
+2. 先用选定 CLI 过 2.0.25 门禁，再让同一 CLI 报缓存目录，并按上面的规则核对插件声明与包；任一不满足就**在写入之前停止**。
 3. 展示目标、覆盖范围和本地改动过的冲突文件，并要求你确认启动环境；确认后先把要覆盖的文件备份到带日期的目录，再写入：
    - 配置：`opencode.jsonc`、`AGENTS.md`、`oh-my-opencode-slim.json`、`oh-my-opencode-slim\`、`plugins\handoff.ts`
    - 两个 skill：`skills\agent-setup\`、`skills\personal-code-prompt\`
