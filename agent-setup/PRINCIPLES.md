@@ -2,7 +2,7 @@
 
 本文件是这套配置的唯一依据。`snapshot/` 里的文件只是这些原则在某个具体版本上的写法。OpenCode、插件或配置格式变了，以本文件为准重新落地，不要照抄旧格式。
 
-最后更新：2026-10-09。当时的环境是 OpenCode V2 2.0.25 和 oh-my-opencode-slim 3.0.2。
+最后更新：2026-10-11。当时的环境是 OpenCode V2 2.0.25 和 oh-my-opencode-slim 3.0.2。
 
 ## 一、角色与分工
 
@@ -18,7 +18,7 @@
 ## 二、模型分配
 
 - 一个 agent 只对应一个模型，不开 fallback。模型出错时，由用户决定是重试还是换模型。
-- 默认角色用便宜、快的模型，带模型名的版本用来对比或点名使用：
+- 默认角色用便宜、快的模型，带模型名的版本默认用来对比或点名使用；自动轮换的例外（fixer、explorer/librarian、validator 三组）见下面表格后的说明：
 
 | 角色 | 默认模型 | 带模型名的版本 |
 |---|---|---|
@@ -26,11 +26,14 @@
 | oracle | GPT-6.1 Sol max | oracle-opus（Claude Opus 5.5 high）、oracle-astra（GPT-6 Astra medium） |
 | explorer | clinepass DeepSeek V4.1 Flash high | explorer-gemini（Gemini 3.8 Flash high）、explorer-luna（GPT-6 Luna max） |
 | librarian | clinepass DeepSeek V4.1 Flash high | librarian-gemini、librarian-luna（同上） |
-| fixer | clinepass DeepSeek V4.1 Flash high | fixer-grok（Grok 4.7 xhigh）、fixer-sol（GPT-6.1 Sol xhigh）、fixer-sonnet（Claude Sonnet 5.5 high） |
+| fixer | clinepass DeepSeek V4.1 Flash high | fixer-grok（Grok 4.7 high）、fixer-sol（GPT-6.1 Sol Fast high）、fixer-sonnet（Claude Sonnet 5.5 high） |
 | designer | Gemini 3.8 Flash high | — |
-| validator | Grok 4.7 high | validator-sol（GPT-6.1 Sol medium） |
+| validator | Grok 4.7 high | validator-sol（GPT-6.1 Sol Fast xhigh） |
 
-- 带模型名的版本只在用户点名使用或要求跨模型比较时才派，平时不消耗 token。**例外是 fixer-grok 和 fixer-sol**：实现任务按难度分流，改动涉及多个文件、需要分几步依次完成，或默认 fixer 已经试过但没改成时，交给这两个之一；单文件小改和机械替换仍交给默认 fixer。两者等量交替使用：每个新的较难任务交给上一次没用的那个，需要并行时尽量平分，不只用其中一个；同一任务的返工或后续仍交给原来那个，因为它已有上下文。交替只在当前会话内记得，新会话或压缩后从哪个开始不固定。原因是 DeepSeek Flash 做 fixer 风险最高，而 Grok 和 Sol 更适合长时间、多步骤的编程任务，交替使用也能比较两者表现。模型或服务报错不算「没改成」，仍按专家失败规则由用户决定。两者都用 xhigh，花费更高，是用户为可靠性做的选择。
+- 带模型名的版本默认只在用户点名使用或要求跨模型比较时才派，平时不消耗 token。**例外有三组会自动轮换：fixer 组、explorer/librarian 组、validator 组，规则如下。**
+- **fixer 组（fixer-grok、fixer-sol）**：实现任务按难度分流，改动涉及多个文件、需要分几步依次完成，或默认 fixer 已经试过但没改成时，交给这两个之一；单文件小改和机械替换仍交给默认 fixer。两者等量交替使用：每个新的较难任务交给上一次没用的那个，需要并行时尽量平分，不只用其中一个；同一任务的返工或后续仍交给原来那个，因为它已有上下文。交替只在当前会话内记得，新会话或压缩后从哪个开始不固定。原因是 DeepSeek Flash 做 fixer 风险最高，而 Grok 和 Sol 更适合长时间、多步骤的编程任务，交替使用也能比较两者表现。模型或服务报错不算「没改成」，仍按专家失败规则由用户决定。fixer-grok 和 fixer-sol 都用 high，是用户为可靠性做的选择。
+- **explorer 组和 librarian 组**：各自按「默认 → Gemini → Luna」的顺序循环，即 explorer 组按 clinepass DeepSeek V4.1 Flash high → explorer-gemini（Gemini 3.8 Flash high）→ explorer-luna（GPT-6 Luna max）→ 回到默认，librarian 组同理（librarian → librarian-gemini → librarian-luna）。每个新的独立检索任务交给轮换顺序中的下一个，不再只在点名时才用变体；需要并行多个独立任务时按该顺序尽量平分，且不重复检索同一内容。同一任务的补充或继续沿用原会话原专家，不推进轮换。用户点名时遵从用户；用户要求同一问题跨模型比较时，保留各专家独立同题检索，不并入普通轮换。轮换顺序只在当前会话内保持，不建立持久化调度、脚本或系统。
+- **validator 组（validator、validator-sol）**：每次需要业务规则核对时，在默认 @validator（Grok 4.7 high）与 @validator-sol（GPT-6.1 Sol Fast xhigh）之间交替，每个新的核对任务交给本会话上一次未使用的那个；需要并行核对不同任务时尽量平分；用户指定时按指定执行；同一核对任务的补充或继续沿用原专家。交替顺序只在当前会话内保持，新会话起始专家不固定。两者仅核对用户已确认的业务规则，核对范围、只读权限与逐次命令授权限制不变。
 - 新增自定义 agent 时，一定要配一个同名的提示词文件，否则插件只会给它一句「你是某某专家」。
 
 ## 三、协作规则

@@ -18,7 +18,7 @@
 | 方面 | 原生 omo-slim | 加上 agent-setup 之后 |
 |---|---|---|
 | 模型 | 按 preset 推荐，可配 fallback 链 | 每个 agent 固定一个模型，不开 fallback；出错由我决定重试或换模型 |
-| 模型版本 agent | 无 | 增加 fixer-grok / fixer-sol / fixer-sonnet、explorer-gemini / explorer-luna、librarian-gemini / librarian-luna、oracle-opus / oracle-astra、validator-sol，平时只在点名或要求跨模型比较时使用；例外是 fixer-grok 和 fixer-sol，多文件、多步骤或默认 fixer 没改成的实现任务在两者之间轮流分配 |
+| 模型版本 agent | 无 | 增加 fixer-grok / fixer-sol / fixer-sonnet、explorer-gemini / explorer-luna、librarian-gemini / librarian-luna、oracle-opus / oracle-astra、validator-sol，默认只在点名或要求跨模型比较时使用；自动轮换的例外有三组：fixer-grok 与 fixer-sol 在较难的实现任务上轮流，explorer / librarian 两组各按 DeepSeek → Gemini → Luna 循环，validator 与 validator-sol 轮流核对 |
 | orchestrator 何时自己动手 | 内置规则：简单的自己做，复杂的派出去 | 只有我明确说「你自己做 / 别派」时才自己做 |
 | explorer → oracle | 都经过 orchestrator，没有专门约定 | explorer 结果原样转给 oracle；oracle 只在结论依赖具体代码时定点读，不重扫全仓；缺信息时返回「Need from explorer」补查 |
 | 多个专家分析同一件事 | 无专门规则 | 分析类角色拿同一个完整问题、互不看结论、汇报时分开写一致和分歧；写代码的角色仍按模块分工 |

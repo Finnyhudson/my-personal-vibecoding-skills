@@ -282,6 +282,35 @@
             "medium": {}
           }
         },
+        "gpt-6.1-sol-fast": {
+          "id": "gpt-6.1-sol-fast",
+          "name": "GPT-6.1 Sol Fast",
+          "family": "gpt",
+          "tool_call": true,
+          "reasoning": true,
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "interleaved": {
+            "field": "reasoning_content"
+          },
+          "limit": {
+            "context": 272000,
+            "input": 272000,
+            "output": 40000
+          },
+          "cost": {
+            "input": 0,
+            "output": 0
+          },
+          "variants": {
+            "xhigh": {},
+            "max": {},
+            "high": { "reasoningEffort": "high" },
+            "medium": { "reasoningEffort": "medium" }
+          }
+        },
         "gpt-6-luna": {
           "id": "gpt-6-luna",
           "name": "GPT-6 Luna",
