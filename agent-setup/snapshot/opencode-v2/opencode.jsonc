@@ -247,10 +247,10 @@
             "output": 0
           },
           "variants": {
-            "xhigh": {},
-            "max": {},
-            "high": {},
-            "medium": {}
+            "xhigh": { "reasoningEffort": "xhigh" },
+            "max": { "reasoningEffort": "max" },
+            "high": { "reasoningEffort": "high" },
+            "medium": { "reasoningEffort": "medium" }
           }
         },
         "gpt-6.1-sol": {
@@ -276,10 +276,10 @@
             "output": 0
           },
           "variants": {
-            "xhigh": {},
-            "max": {},
-            "high": {},
-            "medium": {}
+            "xhigh": { "reasoningEffort": "xhigh" },
+            "max": { "reasoningEffort": "max" },
+            "high": { "reasoningEffort": "high" },
+            "medium": { "reasoningEffort": "medium" }
           }
         },
         "gpt-6.1-sol-fast": {
@@ -305,8 +305,8 @@
             "output": 0
           },
           "variants": {
-            "xhigh": {},
-            "max": {},
+            "xhigh": { "reasoningEffort": "xhigh" },
+            "max": { "reasoningEffort": "max" },
             "high": { "reasoningEffort": "high" },
             "medium": { "reasoningEffort": "medium" }
           }
@@ -334,10 +334,10 @@
             "output": 0
           },
           "variants": {
-            "xhigh": {},
-            "max": {},
-            "high": {},
-            "medium": {}
+            "xhigh": { "reasoningEffort": "xhigh" },
+            "max": { "reasoningEffort": "max" },
+            "high": { "reasoningEffort": "high" },
+            "medium": { "reasoningEffort": "medium" }
           }
         },
         "gpt-5.6-sol": {
@@ -508,10 +508,10 @@
             "output": 0
           },
           "variants": {
-            "low": {},
-            "medium": {},
-            "high": {},
-            "xhigh": {}
+            "low": { "reasoningEffort": "low" },
+            "medium": { "reasoningEffort": "medium" },
+            "high": { "reasoningEffort": "high" },
+            "xhigh": { "reasoningEffort": "xhigh" }
           }
         },
         "gpt-5.5": {
@@ -684,7 +684,7 @@
             "output": 0
           },
           "variants": {
-            "high": {}
+            "high": { "reasoningEffort": "high" }
           }
         },
         "deepseek/deepseek-v4.1-flash": {
