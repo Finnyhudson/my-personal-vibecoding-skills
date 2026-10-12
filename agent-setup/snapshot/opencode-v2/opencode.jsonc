@@ -720,7 +720,7 @@
           }
         },
         "clinepass-deepseek-v4.1-flash": {
-          "id": "clinepass-deepseek-v4.1-flash",
+          "id": "deepseek-v4.1-flash",
           "options": {
             "compaction": { "type": "summary" }
           },
