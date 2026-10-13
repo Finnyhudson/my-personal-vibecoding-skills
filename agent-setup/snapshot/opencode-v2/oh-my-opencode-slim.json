@@ -37,7 +37,7 @@
       "librarian": {
         "model": "finnscode/clinepass-deepseek-v4.1-flash",
         "variant": "high",
-        "orchestratorPrompt": "@librarian\n- 职责：外部文档与库研究、联网检索（external docs, library research, web retrieval）。\n- 派发（默认优先，不强制轮流）：默认用本专家（DeepSeek）承接常规文档与资料查询；仅在需要并行检索多个相互独立的资料问题时，把其中独立的问题交给 @librarian-gemini（Gemini），两者并行分担、不重复检索同一内容。同一任务的补充或继续沿用原会话原专家，不换人。用户明确点名时遵从用户；用户要求对同一问题做跨模型比较时，保留各专家独立同题检索，不并入常规派发。\n- @librarian-luna：仅在问题涉及复杂 API 行为、跨版本差异，或用户点名 @librarian-luna / 要求跨模型比较时使用；不得仅因任务困难或默认专家出错就启用。",
+        "orchestratorPrompt": "@librarian\n- 职责：外部文档与库研究、联网检索（external docs, library research, web retrieval）。\n- 派发（默认优先，不强制轮流）：默认用本专家（DeepSeek）承接常规文档与资料查询；仅在需要并行检索多个相互独立的资料问题时，把其中独立的问题交给 @librarian-gemini（Gemini），两者并行分担、不重复检索同一内容。同一任务的补充或继续沿用原会话原专家，不换人。用户明确点名时遵从用户；用户要求对同一问题做跨模型比较时，保留各专家独立同题检索，不并入常规派发。\n- @librarian-luna：仅在问题涉及复杂 API 行为、跨版本差异，或用户点名 @librarian-luna / 要求跨模型比较时使用；不凭笼统的难度预判启用；默认专家对同一问题补查一次后仍理不清时，可升级交给 Luna，并带上已有结果；模型或服务报错不算没查清，按专家失败规则由用户决定。",
         "skills": [],
         "mcps": [
           "websearch",
@@ -48,7 +48,7 @@
       "explorer": {
         "model": "finnscode/clinepass-deepseek-v4.1-flash",
         "variant": "high",
-        "orchestratorPrompt": "@explorer\n- 职责：只读代码检索与代码库侦察，只读，不修改文件。\n- 派发（默认优先，不强制轮流）：默认用本专家（DeepSeek）承接常规代码检索；仅在需要并行检索多个相互独立的任务时，把其中独立的任务交给 @explorer-gemini（Gemini），两者并行分担、不重复检索同一内容。同一任务的补充或继续沿用原会话原专家，不换人。用户明确点名时遵从用户；用户要求对同一问题做跨模型比较时，保留各专家独立同题检索，不并入常规派发。\n- @explorer-luna：仅在需要追清难以理清的代码路径，或用户点名 @explorer-luna / 要求跨模型比较时使用；不得仅因任务困难或默认专家出错就启用。",
+        "orchestratorPrompt": "@explorer\n- 职责：只读代码检索与代码库侦察，只读，不修改文件。\n- 派发（默认优先，不强制轮流）：默认用本专家（DeepSeek）承接常规代码检索；仅在需要并行检索多个相互独立的任务时，把其中独立的任务交给 @explorer-gemini（Gemini），两者并行分担、不重复检索同一内容。同一任务的补充或继续沿用原会话原专家，不换人。用户明确点名时遵从用户；用户要求对同一问题做跨模型比较时，保留各专家独立同题检索，不并入常规派发。\n- @explorer-luna：仅在需要追清难以理清的代码路径，或用户点名 @explorer-luna / 要求跨模型比较时使用；不凭笼统的难度预判启用；默认专家对同一问题补查一次后仍理不清时，可升级交给 Luna，并带上已有结果；模型或服务报错不算没查清，按专家失败规则由用户决定。",
         "skills": [],
         "mcps": []
       },
@@ -186,7 +186,7 @@
       "model": "finnscode/gemini-3.8-flash-high",
       "variant": "high",
       "description": "Explorer variant pinned to Gemini 3.8 Flash High. Read-only codebase search.",
-      "orchestratorPrompt": "@explorer-gemini\n- 职责：与 @explorer 相同（只读代码检索与代码库侦察），固定使用 Gemini 3.8 Flash High。\n- 派发（辅助并行，不轮流）：不参与常规轮流；仅在需要并行检索多个相互独立的任务时，由 orchestrator 把其中独立的任务交给你，与默认 @explorer 并行分担、不重复检索同一内容。同一任务的补充或继续沿用原会话原专家，不换人。用户明确点名时遵从用户；用户要求对同一问题做跨模型比较时，保留各专家独立同题检索，不并入常规派发。\n- @explorer-luna：仅在需要追清难以理清的代码路径，或用户点名 @explorer-luna / 要求跨模型比较时使用；不得仅因任务困难或默认专家出错就启用。",
+      "orchestratorPrompt": "@explorer-gemini\n- 职责：与 @explorer 相同（只读代码检索与代码库侦察），固定使用 Gemini 3.8 Flash High。\n- 派发（辅助并行，不轮流）：不参与常规轮流；仅在需要并行检索多个相互独立的任务时，由 orchestrator 把其中独立的任务交给你，与默认 @explorer 并行分担、不重复检索同一内容。同一任务的补充或继续沿用原会话原专家，不换人。用户明确点名时遵从用户；用户要求对同一问题做跨模型比较时，保留各专家独立同题检索，不并入常规派发。\n- @explorer-luna：仅在需要追清难以理清的代码路径，或用户点名 @explorer-luna / 要求跨模型比较时使用；不凭笼统的难度预判启用；默认专家对同一问题补查一次后仍理不清时，可升级交给 Luna，并带上已有结果；模型或服务报错不算没查清，按专家失败规则由用户决定。",
       "skills": [],
       "mcps": []
     },
@@ -194,7 +194,7 @@
       "model": "finnscode/gpt-6-luna",
       "variant": "max",
       "description": "Explorer variant pinned to GPT-6 Luna. Read-only codebase search.",
-      "orchestratorPrompt": "@explorer-luna\n- 职责：与 @explorer 相同（只读代码检索与代码库侦察），固定使用 GPT-6 Luna。\n- 使用方式：不参与常规派发；仅在需要追清难以理清的代码路径，或用户点名 @explorer-luna / 要求跨模型比较时使用；不得仅因任务困难或默认专家出错就启用。",
+      "orchestratorPrompt": "@explorer-luna\n- 职责：与 @explorer 相同（只读代码检索与代码库侦察），固定使用 GPT-6 Luna。\n- 使用方式：不参与常规派发；仅在需要追清难以理清的代码路径，或用户点名 @explorer-luna / 要求跨模型比较时使用；不凭笼统的难度预判启用；默认专家对同一问题补查一次后仍理不清时，可升级交给 Luna，并带上已有结果；模型或服务报错不算没查清，按专家失败规则由用户决定。",
       "skills": [],
       "mcps": []
     },
@@ -202,7 +202,7 @@
       "model": "finnscode/gpt-6-luna",
       "variant": "max",
       "description": "Librarian variant pinned to GPT-6 Luna. External docs and web research.",
-      "orchestratorPrompt": "@librarian-luna\n- 职责：与 @librarian 相同（外部文档与库研究、联网检索），固定使用 GPT-6 Luna。\n- 使用方式：不参与常规派发；仅在问题涉及复杂 API 行为、跨版本差异，或用户点名 @librarian-luna / 要求跨模型比较时使用；不得仅因任务困难或默认专家出错就启用。",
+      "orchestratorPrompt": "@librarian-luna\n- 职责：与 @librarian 相同（外部文档与库研究、联网检索），固定使用 GPT-6 Luna。\n- 使用方式：不参与常规派发；仅在问题涉及复杂 API 行为、跨版本差异，或用户点名 @librarian-luna / 要求跨模型比较时使用；不凭笼统的难度预判启用；默认专家对同一问题补查一次后仍理不清时，可升级交给 Luna，并带上已有结果；模型或服务报错不算没查清，按专家失败规则由用户决定。",
       "skills": [],
       "mcps": [
         "websearch",
@@ -214,7 +214,7 @@
       "model": "finnscode/gemini-3.8-flash-high",
       "variant": "high",
       "description": "Librarian variant pinned to Gemini 3.8 Flash High. External docs and web research.",
-      "orchestratorPrompt": "@librarian-gemini\n- 职责：与 @librarian 相同（外部文档与库研究、联网检索），固定使用 Gemini 3.8 Flash High。\n- 派发（辅助并行，不轮流）：不参与常规轮流；仅在需要并行检索多个相互独立的资料问题时，由 orchestrator 把其中独立的问题交给你，与默认 @librarian 并行分担、不重复检索同一内容。同一任务的补充或继续沿用原会话原专家，不换人。用户明确点名时遵从用户；用户要求对同一问题做跨模型比较时，保留各专家独立同题检索，不并入常规派发。\n- @librarian-luna：仅在问题涉及复杂 API 行为、跨版本差异，或用户点名 @librarian-luna / 要求跨模型比较时使用；不得仅因任务困难或默认专家出错就启用。",
+      "orchestratorPrompt": "@librarian-gemini\n- 职责：与 @librarian 相同（外部文档与库研究、联网检索），固定使用 Gemini 3.8 Flash High。\n- 派发（辅助并行，不轮流）：不参与常规轮流；仅在需要并行检索多个相互独立的资料问题时，由 orchestrator 把其中独立的问题交给你，与默认 @librarian 并行分担、不重复检索同一内容。同一任务的补充或继续沿用原会话原专家，不换人。用户明确点名时遵从用户；用户要求对同一问题做跨模型比较时，保留各专家独立同题检索，不并入常规派发。\n- @librarian-luna：仅在问题涉及复杂 API 行为、跨版本差异，或用户点名 @librarian-luna / 要求跨模型比较时使用；不凭笼统的难度预判启用；默认专家对同一问题补查一次后仍理不清时，可升级交给 Luna，并带上已有结果；模型或服务报错不算没查清，按专家失败规则由用户决定。",
       "skills": [],
       "mcps": [
         "websearch",
