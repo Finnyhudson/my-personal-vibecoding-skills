@@ -267,8 +267,8 @@
             "field": "reasoning_content"
           },
           "limit": {
-            "context": 272000,
-            "input": 272000,
+            "context": 500000,
+            "input": 500000,
             "output": 40000
           },
           "cost": {
@@ -296,8 +296,8 @@
             "field": "reasoning_content"
           },
           "limit": {
-            "context": 272000,
-            "input": 272000,
+            "context": 500000,
+            "input": 500000,
             "output": 40000
           },
           "cost": {
