@@ -194,7 +194,7 @@ skill 内容变化后需要**重启 opencode** 才会生效。
 ### 在新机器上恢复 agent 配置
 
 1. 克隆本仓库，用 `sync.ps1 -Direction Push -Target <OpenCode 的 skills 目录>` 安装全部 skill。V2 的 skills 目录在它的配置目录下。
-2. 设置快照里用到的密钥环境变量，变量名见 `agent-setup/snapshot/opencode-v2/opencode.jsonc` 中的 `{env:...}`。
+2. 设置快照里用到的环境变量（既有密钥，也有 `{env:...}` 里的网关地址占位），变量名见 `agent-setup/snapshot/opencode-v2/opencode.jsonc` 中的 `{env:...}`。
 3. 重启 OpenCode，对 agent 说「用 agent-setup 按原则配置本机」。
 
 **不要提交任何真实密钥。**
@@ -205,12 +205,12 @@ skill 内容变化后需要**重启 opencode** 才会生效。
 
 用 `install.ps1` 把 `snapshot/opencode-v2` 和仓库根目录的两个 skill 安装到 OpenCode 2 配置目录。
 
-它**不是任何机器、任何版本都能一键跑通**：只有在能证明版本一致时才写入，否则一律在写入前停下。脚本只做安装，不安装 OpenCode 或依赖，不启动 OpenCode，不调用模型，不改启动脚本和快捷方式。
+它**不是任何机器都能一键跑通**：不限定 OpenCode 版本，但只在能证明插件版本一致时才写入，否则一律在写入前停下。脚本只做安装，不安装 OpenCode 或依赖，不启动 OpenCode，不调用模型，不改启动脚本和快捷方式。
 
 ### 前提
 
 - Windows PowerShell 5.1 或更晚。
-- 目标机器已经装好 **OpenCode 2.0.25**（脚本读取实际 CLI 的版本）。
+- 目标机器已经装好 **OpenCode 2**（快照在 2.0.25 上验证过，不限定版本：脚本只是打印实际 CLI 报出的版本，读不到才停止）。
 - 目标配置目录里已经声明并装好 **oh-my-opencode-slim 3.0.2**。
 - 知道 OpenCode 2 的配置目录路径；脚本不会替你猜，必须由你给出或确认。
 
@@ -226,13 +226,13 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -ConfigDir "D:\path\to\op
 
 ### 版本证据（不满足就停）
 
-脚本只在下面三条都能从真实证据成立时才写入：
+脚本写入前要求下面两条证据成立，并把实际 OpenCode 版本打印出来（不作为门槛）：
 
-- OpenCode 版本：运行实际选定的 CLI `--version`，必须等于 2.0.25。先过这一关。
+- OpenCode 版本：运行实际选定的 CLI `--version`，打印实际版本，不作为门槛；只要 CLI 能报出版本就继续，读不到版本才停止。
 - 插件缓存目录：用同一个 CLI 运行 `opencode debug paths cache`。按 v2 文档，这条命令只读本地路径，不启动 server、不打开数据库。输出必须是恰好一个有效的绝对目录，否则停止。脚本不再推测任何缓存路径。
 - oh-my-opencode-slim 版本：读取目标配置里 `plugin` 与 `plugins` 的声明（字符串或 `{package, options}`，两者会被合并）。必须恰好一条、精确固定为 `oh-my-opencode-slim@3.0.2`；有重复冲突、未固定（标签/范围）或没有声明都会停止。
 
-然后按 v2.0.25 的 npm 缓存规则（与 v2.0.23 相同）检查包：`<cache>\npm\oh-my-opencode-slim@3.0.2\<最大数字 generation>\node_modules\oh-my-opencode-slim\package.json`。固定版本命中缓存时会复用最大 generation，所以只认最大数字 generation；若它没有有效 package（name/version 不是 `oh-my-opencode-slim@3.0.2`）就停止，**不会**降级到旧的 generation。
+然后按已核对的 npm 缓存规则（v2.0.23 与 v2.0.25 的布局未变）检查包：`<cache>\npm\oh-my-opencode-slim@3.0.2\<最大数字 generation>\node_modules\oh-my-opencode-slim\package.json`。固定版本命中缓存时会复用最大 generation，所以只认最大数字 generation；若它没有有效 package（name/version 不是 `oh-my-opencode-slim@3.0.2`）就停止，**不会**降级到旧的 generation。
 
 脚本会把「CLI 路径与版本」「配置目录及其来源」「CLI 返回的缓存目录」「配置里的 plugin 声明」「解析到的 generation 和插件包路径与版本」都打印出来；其中配置目录是你给出或确认的，不是脚本探测到的。
 
@@ -243,12 +243,12 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -ConfigDir "D:\path\to\op
 ### 脚本会做什么
 
 1. 定位目标配置目录（显式/环境变量，否则由你确认候选或输入绝对路径）。
-2. 先用选定 CLI 过 2.0.25 门禁，再让同一 CLI 报缓存目录，并按上面的规则核对插件声明与包；任一不满足就**在写入之前停止**。
+2. 先用选定 CLI 读出实际版本（不限定版本，只打印出来），再让同一 CLI 报缓存目录，并按上面的规则核对插件声明与包；除 OpenCode 版本外任一证据不满足就**在写入之前停止**。
 3. 展示目标、覆盖范围和本地改动过的冲突文件，并要求你确认启动环境；确认后先把要覆盖的文件备份到带日期的目录，再写入：
    - 配置：`opencode.jsonc`、`AGENTS.md`、`oh-my-opencode-slim.json`、`oh-my-opencode-slim\`、`plugins\handoff.ts`
    - 两个 skill：`skills\agent-setup\`、`skills\personal-code-prompt\`
 4. 不复制 `snapshot/machine-specific/` 启动脚本，不改入口或快捷方式；快照里的本机绝对路径只有在属于用户目录时才替换为当前用户目录，遇到无法安全适配的路径就停止。
-5. 提示配置里用到的 API key 环境变量（`FINNSCODE_API_KEY`、`COMMANDCODE_API_KEY`、`COPILOT_API_KEY`），用隐藏输入设置到用户环境变量；已有值默认保留，真实 key 既不显示也不写文件。
+5. 提示配置里引用的环境变量：密钥 `FINNSCODE_API_KEY`、`COMMANDCODE_API_KEY`、`COPILOT_API_KEY` 用隐藏输入；网关地址 `FINNSCODE_BASE_URL`、`COMMANDCODE_BASE_URL` 不是密钥、用可见输入。都设置到用户环境变量，已有值默认保留。网关地址缺失时配置里的地址会被替换成空字符串，所以必须在重启前设置；真实 key 既不显示也不写文件。
 6. 静态解析 `opencode.jsonc` 和 `oh-my-opencode-slim.json`，最后提示重启。
 
 已存在的同名文件如果和快照内容不同，会作为「本地改动」单独列出并需要你确认，不会静默覆盖，也不会删除无关文件。

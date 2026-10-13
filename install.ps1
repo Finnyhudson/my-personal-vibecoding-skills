@@ -7,9 +7,12 @@
     the local handoff plugin and the two repository skills (agent-setup and
     personal-code-prompt) into an OpenCode config directory.
 
-    The snapshot is only applied when the machine runs the exact versions it was
-    written for, and when that can be shown from real evidence:
-      - the OpenCode version comes from running the actual CLI;
+    The snapshot was validated on OpenCode 2.0.25, but it is not restricted to
+    that version: only the plugin version is pinned, and fields may change
+    between OpenCode versions. The evidence the install requires is:
+      - the OpenCode version is read from the actual CLI and printed, but it is
+        NOT a gate; any reported version continues. The script stops only when
+        no version can be read at all (no evidence);
       - the plugin cache directory comes from the same CLI ('debug paths cache',
         which only reads local paths, no server and no database);
       - the oh-my-opencode-slim version is the pinned version declared in the
@@ -49,11 +52,11 @@ $ErrorActionPreference = 'Stop'
 # ---------------------------------------------------------------------------
 # Settings
 #
-# The snapshot was written for these exact versions. Fields and plugin layout
-# change between OpenCode versions, so the install refuses to run on anything
-# else. Update these only together with agent-setup/snapshot/opencode-v2.
+# The snapshot was validated on OpenCode 2.0.25, but the install does not
+# restrict the OpenCode version; only the plugin version is pinned. Fields and
+# plugin layout may change between OpenCode versions, so update these only
+# together with agent-setup/snapshot/opencode-v2.
 # ---------------------------------------------------------------------------
-$RequiredOpenCodeVersion = '2.0.25'
 $RequiredPluginName      = 'oh-my-opencode-slim'
 $RequiredPluginVersion   = '3.0.2'
 
@@ -391,11 +394,14 @@ $targetConfig = $configSelection.Path
 $cli = Resolve-OpenCodeCli -Explicit $CliPath
 
 # ---------------------------------------------------------------------------
-# 2. Gate the CLI version first, before asking it for anything else.
+# 2. Read the CLI version first, before asking it for anything else. The
+#    snapshot was validated on OpenCode 2.0.25, but the version is not a gate:
+#    any reported version continues. Only an unreadable version stops, because
+#    then there is no evidence at all.
 # ---------------------------------------------------------------------------
 $openCodeVersion = Get-OpenCodeVersion -Cli $cli
-if ($openCodeVersion -ne $RequiredOpenCodeVersion) {
-    Stop-WithReport ("Version mismatch. This snapshot is for OpenCode {0}; the CLI reports {1}." -f $RequiredOpenCodeVersion, ($(if ($openCodeVersion) { $openCodeVersion } else { 'unknown' })))
+if (-not $openCodeVersion) {
+    Stop-WithReport 'Cannot read an OpenCode version from the CLI; there is not enough evidence to continue.'
 }
 
 # ---------------------------------------------------------------------------
@@ -543,20 +549,27 @@ catch {
 }
 
 # ---------------------------------------------------------------------------
-# 9. API keys: set user environment variables with hidden input, never printed.
+# 9. Environment variables: set the ones the config references. Secrets use
+#    hidden input; gateway base URLs (*_BASE_URL) use visible input because an
+#    address is not a secret. Values are never printed.
 # ---------------------------------------------------------------------------
 $configText = [System.IO.File]::ReadAllText((Join-Path $targetConfig 'opencode.jsonc'), [System.Text.Encoding]::UTF8)
 $envNames = @([regex]::Matches($configText, '\{env:([^}]+)\}') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
 
 Write-Host ''
-Write-Host 'API key environment variables referenced by the config:'
+Write-Host 'Environment variables referenced by the config:'
 foreach ($name in $envNames) {
     $existing = [Environment]::GetEnvironmentVariable($name, 'User')
     if ($existing) {
         $answer = Read-Host ('  {0} already set in User scope. Update it? [y/N]' -f $name)
         if ($answer -notmatch '^[Yy]') { Write-Host ('  kept {0}' -f $name); continue }
     }
-    $value = Read-SecretText -Prompt ('  enter {0} (hidden, empty to skip)' -f $name)
+    if ($name -match '_BASE_URL$') {
+        $value = Read-Host ('  enter {0} (visible, empty to skip)' -f $name)
+    }
+    else {
+        $value = Read-SecretText -Prompt ('  enter {0} (hidden, empty to skip)' -f $name)
+    }
     if ([string]::IsNullOrEmpty($value)) { Write-Host ('  skipped {0}' -f $name); continue }
     [Environment]::SetEnvironmentVariable($name, $value, 'User')
     Write-Host ('  set {0} for the current user' -f $name)
