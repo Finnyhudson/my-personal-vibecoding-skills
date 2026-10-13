@@ -3,7 +3,7 @@
   "model": "finnscode/gpt-6.1-sol#medium",
   "permission": "allow",
   "plugin": [
-    "oh-my-opencode-slim@3.0.2"
+    "oh-my-opencode-slim@3.0.4"
   ],
   "agent": {
     "explore": {

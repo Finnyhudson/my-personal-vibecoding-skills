@@ -9,6 +9,12 @@
   "fallback": {
     "enabled": false
   },
+  "backgroundJobs": {
+    "boardInjection": true,
+    "orchestratorWake": {
+      "periodicWakeEnabled": true
+    }
+  },
   "presets": {
     "finnscode": {
       "orchestrator": {

@@ -59,7 +59,7 @@ $ErrorActionPreference = 'Stop'
 # together with agent-setup/snapshot/opencode-v2.
 # ---------------------------------------------------------------------------
 $RequiredPluginName      = 'oh-my-opencode-slim'
-$RequiredPluginVersion   = '3.0.2'
+$RequiredPluginVersion   = '3.0.4'
 
 $RepoRoot        = Split-Path -Parent $MyInvocation.MyCommand.Path
 $SnapshotDir     = Join-Path $RepoRoot 'agent-setup\snapshot\opencode-v2'

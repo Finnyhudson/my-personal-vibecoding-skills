@@ -7,7 +7,7 @@
 | 路线 | 适用情况 | 怎么做 |
 |---|---|---|
 | A. 交给 agent（默认） | 想按原则把本机适配到最新版本/格式 | 把下面 A 节那句提示词交给一个能读写文件、能执行命令的 agent |
-| B. 手动运行 install.ps1 | 插件正好是 3.0.2，只想少做几步手工操作 | 自己按 B 节运行 `install.ps1` |
+| B. 手动运行 install.ps1 | 插件正好是 3.0.4，只想少做几步手工操作 | 自己按 B 节运行 `install.ps1` |
 
 ## A. 让 agent 帮我配置
 
@@ -23,13 +23,13 @@
 
 ## B. 手动运行 install.ps1
 
-`install.ps1` 只是**插件版本为 3.0.2 时**的可选快捷方式，不是跨版本主流程；要按原则适配本机，请走路线 A。
+`install.ps1` 只是**插件版本为 3.0.4 时**的可选快捷方式，不是跨版本主流程；要按原则适配本机，请走路线 A。
 
 ### 前提
 
 - Windows PowerShell 5.1 或更新。
 - 目标机器已经装好 **OpenCode 2**：快照在 2.0.25 上验证过，但**不限定 OpenCode 版本**——脚本只打印实际 CLI 报出的版本，读不到才停止。
-- 目标配置目录里已经声明并装好 **oh-my-opencode-slim@3.0.2**（插件版本精确固定）。
+- 目标配置目录里已经声明并装好 **oh-my-opencode-slim@3.0.4**（插件版本精确固定）。
 - 知道 OpenCode 2 的配置目录路径；脚本不会替你猜，必须由你给出或确认。
 - 脚本有多处交互会停下来等确认，**不适合无人值守**，agent 直接跑会挂在 `Read-Host`。
 
@@ -82,7 +82,7 @@ Copy-Item .\opencode-backup-20261008-120000\* "D:\path\to\opencode\config" -Recu
 ```
 my-personal-vibecoding-skills/
 ├── README.md
-├── install.ps1                    # 插件 3.0.2 时的便捷安装脚本
+├── install.ps1                    # 插件 3.0.4 时的便捷安装脚本
 ├── sync.ps1                       # 仓库 <-> OpenCode 运行目录的 skill 同步脚本
 ├── agent-setup/                   # 多 agent 配置原则与快照
 │   ├── SKILL.md
