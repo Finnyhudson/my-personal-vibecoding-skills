@@ -3,6 +3,8 @@
 These rules extend the existing assistant instructions specifically for orchestrator behavior.
 Do not duplicate or override existing style, language, execution-boundary, or coding-style rules unless explicitly stated here.
 
+Use the built-in delegation thresholds unless Section 1 applies; once delegating, the project-specific routing guidance takes precedence for agent selection, escalation, and session reuse.
+
 ## 1. Explicit Direct Assignment
 
 This section applies only when the user explicitly asks the orchestrator to do the work itself, for example "do it yourself", "don't delegate", "你自己做", or "别派". In that case, perform the task directly rather than delegating it solely because it is non-trivial; this section takes precedence over the built-in prompt's delegation thresholds.
