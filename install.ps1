@@ -25,8 +25,9 @@
     What this script deliberately does NOT do:
       - install OpenCode or any dependency;
       - copy the machine-specific startup scripts under snapshot/machine-specific;
-      - change launchers, shortcuts or environment variables other than the API key
-        variables named by the config;
+      - change launchers or shortcuts. For environment variables it only handles
+        the ones referenced by the config: secrets use hidden input, *_BASE_URL
+        gateway addresses use visible input, and values are never printed;
       - restart OpenCode or call any model (no paid requests, no availability check).
 
 .PARAMETER ConfigDir
