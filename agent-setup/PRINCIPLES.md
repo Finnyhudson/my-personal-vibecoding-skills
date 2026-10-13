@@ -2,7 +2,7 @@
 
 本文件是这套配置的唯一依据。`snapshot/` 里的文件只是这些原则在某个具体版本上的写法。OpenCode、插件或配置格式变了，以本文件为准重新落地，不要照抄旧格式。
 
-最后更新：2026-10-12。当时的环境是 OpenCode V2 2.0.25 和 oh-my-opencode-slim 3.0.2。
+最后更新：2026-10-13。当时的环境是 OpenCode V2 2.0.25 和 oh-my-opencode-slim 3.0.2。
 
 ### 推理档位必须有明确参数
 
@@ -27,10 +27,10 @@ agent 的 `variant` 名称与模型定义中的实际请求参数要对应，不
 | 角色 | 默认模型 | 带模型名的版本 |
 |---|---|---|
 | 主会话 | GPT-6.1 Sol medium | — |
-| oracle | GPT-6.1 Sol Fast max | oracle-opus（Claude Opus 5.5 high）、oracle-astra（GPT-6 Astra medium） |
+| oracle | GPT-6.1 Sol Fast max | oracle-opus（Claude Opus 5.5 high）、oracle-astra（GPT-6 Astra xhigh） |
 | explorer | clinepass DeepSeek V4.1 Flash high | explorer-gemini（Gemini 3.8 Flash high）、explorer-luna（GPT-6 Luna max） |
 | librarian | clinepass DeepSeek V4.1 Flash high | librarian-gemini、librarian-luna（同上） |
-| fixer | clinepass DeepSeek V4.1 Flash high | fixer-grok（Grok 4.7 high）、fixer-sol（GPT-6.1 Sol Fast high）、fixer-sonnet（Claude Sonnet 5.5 high） |
+| fixer | clinepass DeepSeek V4.1 Flash high | fixer-grok（Grok 4.7 high）、fixer-sol（GPT-6.1 Sol Fast high）、fixer-sonnet（Claude Sonnet 5.5 high）、fixer-astra（GPT-6 Astra high，仅点名或跨模型比较时使用） |
 | designer | Gemini 3.8 Flash high | — |
 | validator | Grok 4.7 high | validator-sol（GPT-6.1 Sol xhigh） |
 
