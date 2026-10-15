@@ -152,3 +152,6 @@ skill 内容变化后需要**重启 opencode** 才会生效。
 | 上下文压缩 | 不涉及 | provider 默认原生压缩；Claude 系列与 clinepass DeepSeek 单独设为 summary，并记录原因 |
 
 其余细节以 `agent-setup/PRINCIPLES.md` 为准。
+
+## 社区认可与友情链接
+[LINUX DO](https://linux.do/) - 新的理想型社区
