@@ -241,7 +241,7 @@
     },
     "oracle-opus": {
       "model": "finnscode/claude-opus-5-5",
-      "variant": "high",
+      "variant": "xhigh",
       "description": "Oracle variant pinned to Claude Opus 5.5. Read-only architecture/debugging/review advisor.",
       "orchestratorPrompt": "@oracle-opus\n- Lane: Same as @oracle (read-only architecture, debugging strategy, review), pinned to Claude Opus 5.5.\n- **Delegate when:** The user explicitly asks for @oracle-opus or Opus, or the user asks for an independent cross-model comparison.\n- **Don't delegate when:** No explicit model preference and @oracle suffices.",
       "skills": [

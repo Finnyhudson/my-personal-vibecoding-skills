@@ -27,7 +27,7 @@ agent 的 `variant` 名称与模型定义中的实际请求参数要对应，不
 | 角色 | 默认模型 | 带模型名的版本 |
 |---|---|---|
 | 主会话 | GPT-6.1 Sol medium | — |
-| oracle | GPT-6.1 Sol Fast max | oracle-opus（Claude Opus 5.5 high）、oracle-astra（GPT-6 Astra xhigh） |
+| oracle | GPT-6.1 Sol Fast max | oracle-opus（Claude Opus 5.5 xhigh）、oracle-astra（GPT-6 Astra xhigh） |
 | explorer | clinepass DeepSeek V4.1 Flash high | explorer-gemini（Gemini 3.8 Flash high）、explorer-luna（GPT-6 Luna max） |
 | librarian | clinepass DeepSeek V4.1 Flash high | librarian-gemini、librarian-luna（同上） |
 | fixer | clinepass DeepSeek V4.1 Flash high | fixer-grok（Grok 4.7 high）、fixer-sol（GPT-6.1 Sol Fast xhigh）、fixer-sonnet（Claude Sonnet 5.5 high）、fixer-astra（GPT-6 Astra high，仅点名或跨模型比较时使用） |
