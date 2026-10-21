@@ -609,9 +609,7 @@
           "interleaved": {
             "field": "reasoning_content"
           },
-          "reasoning_options": [
-            { "type": "effort", "values": ["low", "medium", "high", "max", "xhigh"] }
-          ],
+          
           "variants": {
             "low": { "reasoningEffort": "low" },
             "medium": { "reasoningEffort": "medium" },
@@ -645,9 +643,7 @@
           "interleaved": {
             "field": "reasoning_content"
           },
-          "reasoning_options": [
-            { "type": "effort", "values": ["low", "medium", "high", "xhigh", "max"] }
-          ],
+          
           "variants": {
             "low": { "reasoningEffort": "low" },
             "medium": { "reasoningEffort": "medium" },
