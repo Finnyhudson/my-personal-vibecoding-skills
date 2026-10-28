@@ -116,7 +116,7 @@ def choose_items(filtered):
     for _ in range(MAX_FORMAT_RETRIES + 1):
         raw = call_model(prompt, schema=CHOOSE_SCHEMA, timeout=MODEL_TIMEOUT_SECONDS)
         problem = find_contract_violation(raw, CHOOSE_SCHEMA, filtered)
-        log_model_call("choose", prompt, raw, problem)
+        log_model_call("choose", CHOOSE_PROMPT_VERSION, prompt, raw, problem)
         if problem is None:
             return parse_choices(raw)
         prompt = with_retry_note(base_prompt, problem)
@@ -128,5 +128,5 @@ def choose_items(filtered):
 - `CHOOSE_SCHEMA` 同时用于发送和校验，只有一个结构定义源；发送了 schema，Prompt 正文仍要说明各字段的语义。
 - `find_contract_violation` 除了查结构，还核对回填的候选 ID 都来自输入，返回第一条具体违规；结构正确不等于语义正确。
 - 纠错在原始 Prompt 上只追加本次违规说明，不把历次纠错越叠越长；纠错文字写法见 `prompt-template.md`。
-- `log_model_call` 记录渲染后的 Prompt、原始返回和校验结论，连同 settings 里的模型名与参数一起写一行 jsonl，供 bad case 定位使用。
+- `log_model_call` 记录阶段名、Prompt 版本、渲染后的 Prompt、原始返回和校验结论，连同 settings 里的模型名与参数一起写一行 jsonl，供 bad case 定位使用。
 - 选择是核心阶段：没有候选或重试用尽都直接抛错，不返回空列表假装成功。
