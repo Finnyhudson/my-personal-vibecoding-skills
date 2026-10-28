@@ -141,7 +141,7 @@ skill 内容变化后需要**重启 opencode** 才会生效。
 | 方面 | 原生 omo-slim | 加上 agent-setup 之后 |
 |---|---|---|
 | 模型 | 按 preset 推荐，可配 fallback 链 | 每个 agent 固定一个模型，不开 fallback；模型出错由用户决定重试还是换模型 |
-| 模型版本 agent | 无 | 增加 fixer-grok / fixer-sol / fixer-sonnet / fixer-astra、explorer-gemini / explorer-luna、librarian-gemini / librarian-luna、oracle-opus / oracle-astra、validator-sol；默认只在点名或要求跨模型比较时使用。自动轮换的例外现在只剩 validator 组（validator 与 validator-sol 交替），fixer、explorer、librarian 组改为按职责难度与并行需要按需派发 |
+| 模型版本 agent | 无 | 增加 fixer-terra / fixer-sol / fixer-sonnet / fixer-astra、explorer-gemini / explorer-luna、librarian-gemini / librarian-luna、oracle-opus / oracle-astra、validator-sol / validator-terra；复杂实现需要升级时默认派 fixer-terra（GPT-6.1 Terra max），fixer-sol（GPT-6.1 Sol Fast xhigh）承接独立并行的升级任务或点名，其余带模型名的版本默认只在点名或要求跨模型比较时使用。自动轮换的例外现在只剩 validator 组（validator → validator-sol → validator-terra 固定顺序轮流），fixer、explorer、librarian 组改为按职责难度与并行需要按需派发 |
 | orchestrator 何时自己动手 | 内置规则：简单的自己做，复杂的派出去 | 只有用户明确说「你自己做」「别派」时才亲自动手 |
 | explorer → oracle 衔接 | 都经过 orchestrator，没有专门约定 | explorer 结果原样转给 oracle；oracle 只在结论依赖具体代码时才定点读，不重扫全仓；缺信息时返回「Need from explorer」补查 |
 | 多个专家分析同一件事 | 无专门规则 | 分析类角色拿同一个完整问题、互不看结论、汇报时分开写一致和分歧；写代码的角色仍按模块分工 |

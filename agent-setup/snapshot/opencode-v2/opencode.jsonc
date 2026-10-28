@@ -311,6 +311,35 @@
             "medium": { "reasoningEffort": "medium" }
           }
         },
+        "gpt-6.1-terra": {
+          "id": "gpt-6.1-terra",
+          "name": "GPT-6.1 Terra",
+          "family": "gpt",
+          "tool_call": true,
+          "reasoning": true,
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "interleaved": {
+            "field": "reasoning_content"
+          },
+          "limit": {
+            "context": 500000,
+            "input": 500000,
+            "output": 40000
+          },
+          "cost": {
+            "input": 0,
+            "output": 0
+          },
+          "variants": {
+            "xhigh": { "reasoningEffort": "xhigh" },
+            "max": { "reasoningEffort": "max" },
+            "high": { "reasoningEffort": "high" },
+            "medium": { "reasoningEffort": "medium" }
+          }
+        },
         "gpt-6-luna": {
           "id": "gpt-6-luna",
           "name": "GPT-6 Luna",
@@ -721,6 +750,41 @@
             "compaction": { "type": "summary" }
           },
           "name": "DeepSeek V4.1 Flash (clinepass)",
+          "family": "deepseek-flash",
+          "tool_call": true,
+          "reasoning": true,
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "interleaved": {
+            "field": "reasoning_content"
+          },
+          "reasoning_options": [
+            { "type": "toggle" },
+            { "type": "effort", "values": ["low", "medium", "high", "max"] }
+          ],
+          "variants": {
+            "low": { "reasoningEffort": "low" },
+            "medium": { "reasoningEffort": "medium" },
+            "high": { "reasoningEffort": "high" },
+            "max": { "reasoningEffort": "max" }
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 384000
+          },
+          "cost": {
+            "input": 0,
+            "output": 0
+          }
+        },
+        "deepseek-v4.1-flash-1017": {
+          "id": "deepseek-v4.1-flash-1017",
+          "options": {
+            "compaction": { "type": "summary" }
+          },
+          "name": "DeepSeek V4.1 Flash 1017 (clinepass)",
           "family": "deepseek-flash",
           "tool_call": true,
           "reasoning": true,
